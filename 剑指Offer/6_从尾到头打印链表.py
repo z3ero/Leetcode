@@ -4,6 +4,7 @@
 #         self.val = x
 #         self.next = None
 # 使用栈的方式
+'''
 class Solution:
     # 返回从尾部到头部的列表值序列，例如[1,2,3]
     def printListFromTailToHead(self, listNode):
@@ -14,7 +15,7 @@ class Solution:
             ll = ll.next
         return array_list[::-1]
         # write code here
-
+'''
 # 使用递归函数，速度和内存会更快些
 class Solution:
     # 返回从尾部到头部的列表值序列，例如[1,2,3]
