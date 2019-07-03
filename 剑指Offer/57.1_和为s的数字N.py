@@ -33,3 +33,30 @@ class Solution:
         else:
             return []     
         # write code here
+
+
+class Solution:
+    # 思路2:
+    # 1. 两个指针A, B，分别指向头和尾
+    # 2. 若A+B=sum 存入结果
+    #    若A+B<sum A后移
+    #    若A+B>sum B前移
+    def FindNumbersWithSum(self, array, tsum):
+        if len(array) == 0:
+            return []
+        head, tail = 0, len(array)-1
+        result = []
+        res_dot = None
+        while head < tail:
+            tmp = array[head] + array[tail]
+            if tmp == tsum:
+                if not result or res_dot > array[head]*array[tail]:
+                    result = [array[head], array[tail]]
+                    res_dot = array[head]*array[tail]
+                head += 1
+            elif tmp > tsum:
+                tail -= 1
+            else:
+                head += 1
+        return result
+        
