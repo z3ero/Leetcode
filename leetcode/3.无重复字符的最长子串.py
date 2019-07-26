@@ -5,13 +5,12 @@
 #
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
-        usedChar = {}
+        # 滑动窗口思路
         start = max_length = 0
-        for index, char in enumerate(s):
-            # 发现重复字符串，移动start, 生成新的候选最长不重复字符串
-            if char in usedChar and start<=usedChar[char]:
-                start = usedChar[char] + 1
-            else:   # 未发现用过的字符串
-                max_length = max(max_length, index-start+1)
-            usedChar[char] = index
+        used_dict = {}
+        for index in range(len(s)):
+            if s[index] in used_dict:
+                start = max(start, used_dict[s[index]]+1)
+            max_length = max(max_length, index-start+1)
+            used_dict[s[index]] = index
         return max_length
