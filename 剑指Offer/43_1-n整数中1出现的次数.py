@@ -1,4 +1,22 @@
+# -*- coding:utf-8 -*-
+# 思路 1： 对每一个数字通过取余得到它的 1 的位数
+class Solution:
+    def NumberOf1Between1AndN_Solution(self, n):
+        # write code here
+        count = 0
+        for i in range(1, n+1):
+            tmp = i
+            while tmp:
+                if tmp % 10 == 1:
+                    count += 1
+                tmp = tmp // 10
+        return count
+
+
+
 import math
+
+
 class Solution:
     def NumberOf1Between1AndN_Solution(self, n):
         # write code here
