@@ -12,39 +12,26 @@ class Solution:
                 tmp = tmp // 10
         return count
 
-
-
-import math
-
-
+# -*- coding:utf-8 -*-
+# 思路2: 从低到高，每次计算1个位上1出现的个数
+# 1. 个位: 每经过10，个位出现1。个位1的个数: n//10 + (1 if n%10>=1 0)
+# 2. 十位: 每经过100，出现1，重复10次，十位1: n//100*10 + （3 种类情况）
+#    2.1: (n%100)%10 > 1: 十位上数大于1，则为 n//100*10 + 10    如 520
+#    2.2: (n%100)%10 == 1: 十位上数 =1, 则为 n//100*10 + n%10 + 1 如514
+#    2.3: (n%100)%10 < 1: 十位上数小于1, 则为 n//100*10 + 0 如509
 class Solution:
     def NumberOf1Between1AndN_Solution(self, n):
-        # write code here
-        sum_one = 0
-        count = 0  # 经历了几次循环
-        while n//10:
-            tmp_sum = (n-1)//10 + 1   # 从1开始，每经过一个10，个位上必定有一个1
-            sum_one += tmp_sum*int(math.pow(10, count))
-            n //= 10
-            count += 1
-        # 最高位上出现的 1 单独考虑
-        if n > 1:   # 若 最高位上的数 > 1, 则最高位上1出现的次数为 1*(10^count)
-            sum_one += int(math.pow(10, count))
-        else:  # 若最高位上数 == 1，则最高位1 出现的次数为 n % (10^count)
-            sum_one += n
-        return sum_one
-
-
-    def baoli(self, n):
-        sum_one = 0
-        for i in range(n+1):
-            j = i
-            while j:
-                if j%10 == 1:
-                    sum_one += 1
-                j/=10
-        return sum_one
-
-sol = Solution()
-print(sol.NumberOf1Between1AndN_Solution(21345))
-print(sol.baoli(21345))
+        if n<1: return 0
+        count = 0
+        base = 1
+        roundd = n
+        while roundd > 0:
+            weight = roundd % 10
+            roundd = roundd // 10
+            count += roundd * base
+            if weight == 1:
+                count += (n%base)+1
+            elif weight > 1:
+                count += base
+            base *= 10
+        return count
