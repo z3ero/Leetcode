@@ -19,6 +19,7 @@ class Solution:
 #    2.1: (n%100)%10 > 1: 十位上数大于1，则为 n//100*10 + 10    如 520
 #    2.2: (n%100)%10 == 1: 十位上数 =1, 则为 n//100*10 + n%10 + 1 如514
 #    2.3: (n%100)%10 < 1: 十位上数小于1, 则为 n//100*10 + 0 如509
+# 3. 更高位上如2分析
 class Solution:
     def NumberOf1Between1AndN_Solution(self, n):
         if n<1: return 0
