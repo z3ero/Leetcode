@@ -3,9 +3,13 @@
 def bubble_sort(nums):
     nums_len = len(nums)
     for i in range(0, nums_len):
+        sign = True
         for j in range(0, nums_len-i-1):
             if nums[j+1] < nums[j]:
+                sign = False
                 nums[j], nums[j+1] = nums[j+1], nums[j]
+        if sign:
+            break
     return nums 
 # 2. Selection Sort
 def selection_sort(nums):
@@ -28,7 +32,7 @@ def insertion_sort(nums):
             insert_index -= 1
         nums[insert_index+1] = value
     return nums
-# 4. Insert Sort
+# 4. Insert Sort (希尔排序是升级版的插入排序)
 def shell_sort(nums):
     nums_len = len(nums)
     gap = nums_len // 2
@@ -76,59 +80,56 @@ def merge_sort(nums):
     return nums
 # 6. Quick Sort
 def qucik_sort(nums):
-    def q_sort(arr, l, r):
-        if l>=r: return
-        pos = partition(arr, l, r)
-        q_sort(arr, l, pos-1)
-        q_sort(arr, pos+1, r)
-    def partition(arr, l, r):
-        pos = l; l+=1
-        while l<=r:
-            while l<=r and arr[r]>=arr[pos]: # find the first num on the right less than value
-                r-=1
-            if l<=r:
-                arr[pos], arr[r] = arr[r], arr[pos]
-                pos = r 
-                r-=1
-            while l<=r and arr[l] <= arr[pos]: # find the first num on the left more than value
-                l+=1
-            if l<=r:
-                arr[pos], arr[l] = arr[l], arr[pos]
-                pos = l
-                l+=1
-        return pos
+    def q_sort(arr, low, high):
+        if low < high:
+            pos = partition(arr, low, high)
+            q_sort(arr, low, pos-1)
+            q_sort(arr, pos+1, high)
+    def partition(arr, low, high):
+        key = arr[low]
+        while low < high:
+            while low < high and arr[high] >= key:
+                high -= 1
+            arr[low] = arr[high]
+            while low < high and arr[low] <= key:
+                low += 1
+            arr[high] = arr[low]
+        arr[low] = key
+        return low
     q_sort(nums, 0, len(nums)-1)
     return nums
-# 7. Heap Sort
-def heap_sort(nums):
-    def build_max_heap(nums):
-        # 从最后一个非叶子节点开始向上构造最大堆
-        nums_len = len(nums)
-        for i in range(nums_len//2, -1, -1):
-            adjust_heap(nums, i)
-    def adjust_heap(nums, i):
-        max_index = i
-        # 如果有左子树
-        if i*2<nums_len and nums[i*2] > nums[max_index]:
-            max_index = i*2
-        # 如果有右子树
-        if i*2+1<nums_len and nums[i*2+1] > nums[max_index]:
-            max_index = i*2 + 1
-        # 如果父节点不是最大值，则将父节点和最大值交换，并且递归调整与父节点交换的位置
-        if max_index != i:
-            nums[max_index], nums[i] = nums[i], nums[max_index]
-            adjust_heap(nums, max_index)
-    nums_len = len(nums)
-    if nums_len < 1:
-        return nums
-    # 1， 构建一个最大堆
-    build_max_heap(nums)
-    # 2.  循环将堆首位(最大值)与末位交换，然后重新调整最大堆
-    while nums_len > 0:
-        nums[0], nums[nums_len-1] = nums[nums_len-1], nums[0]
-        nums_len -= 1
-        adjust_heap(nums, 0)
-    return nums
+
+# 7. Heap Sort： 以小顶堆为例
+def heap_sort(arr):   # 注意：堆排序的数组下标是以 1 开头的
+    def adjust_heap(arr, i, length): # 对某一个节点，调整以它为顶点的树
+        key = arr[i]
+        # 从该节点开始 沿着 关键字 较小的孩子方向向下进行
+        while i*2 <= length:
+            child_index = i*2
+            if child_index < length and arr[child_index] > arr[child_index+1]:  # 如果有两个孩子，且右孩子较小, 和右孩子比较即可
+                child_index += 1
+            if key > arr[child_index]  # 根节点比孩子大，要把孩子调整上去
+                arr[i] = arr[child_index]
+                i = child_index    # 下一步比较 key 和 （child_index 的孩子节点）
+            else:   # 根节点符合小顶条件，子节点本就符合小顶条件，不用调整了
+                break
+        arr[i] = key   # 将 key 放在最后调整出来的位置
+
+    length = len(arr)
+    # 构建最小堆
+    for i in range(length//2, -1, 1):  # 从后往前 对每个元素 自顶向下的 调整堆
+        adjust_heap(arr, i, length)
+
+    # 输出最小堆的排序序列
+    for i in range(length, -1, 1):
+        # 堆顶记录和最后一个元素互换
+        arr[1], arr[i] = arr[i], arr[1]
+        # 重新调整 1 ~ i-1 为小顶堆
+        adjust_heap(arr, 1, i-1)
+
+    # 最终数组按照从后往前的顺序，为从小到大的顺序
+    return arr.reverse()
+
 # 8. Count Sort
 def count_sort(nums):
     # 不是基于比较的，而是基于数组下标的，只适用于 整数数组，且极差较小的数组
@@ -146,6 +147,7 @@ def count_sort(nums):
         new_nums[count_arr[each-min_value]-1] = each
         count_arr[each-min_value] -= 1
     return new_nums
+
 # 9. bucket sort
 def bucket_sort(nums):
     max_value, min_value = max(nums), min(nums)
