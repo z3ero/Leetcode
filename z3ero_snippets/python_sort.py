@@ -46,10 +46,26 @@ def shell_sort(nums):
             nums[insert_index + gap] = value
         gap = gap // 2
     return  nums
+    
 # 5. Merge Sort 
 def merge_sort(nums, l, r):  # 初始的 l=0; r= len(arr)-1
     def merge(arr, l, mid, r):
-        pass
+        tmp_arr = [0]*(r-l+1)
+        p1, p2 = l, mid+1
+        # compare two arr, select smaller one to fill temporary array
+        index = 0
+        while p1 <= mid and p2 <= r:
+            if arr[p1]<=arr[p2]:
+                tmp_arr[index]=arr[p1]; p1+=1
+            else:
+                tmp_arr[index]=arr[p2]; p2+=1
+            index += 1
+        if p1<=mid:
+            tmp_arr[index:]=arr[p1:mid+1]
+        elif p2<=mid:
+            tmp_arr[index:]=arr[p2:r+1]
+        # 转移到原数组上
+        arr[l:r+1] = tmp_arr   
 
     if l >= r:
         return
@@ -57,30 +73,8 @@ def merge_sort(nums, l, r):  # 初始的 l=0; r= len(arr)-1
     merge_sort(nums, l, mid)
     merge_sort(nums, mid+1, r)
     merge(nums, l, mid, r)
-    
-    def merge(arr, l, mid, r):
-        tmp_arr = [0]*(r-l)
-        p1, p2 = l, mid
-        # compare two arr, select smaller one to fill temporary array
-        index = 0
-        while p1 < mid and p2 < r:
-            if arr[p1]<=arr[p2]:
-                tmp_arr[index]=arr[p1]
-                p1+=1
-            else:
-                tmp_arr[index]=arr[p2]
-                p2+=1
-            index+=1
-        while p1 < mid:
-            tmp_arr[index] = arr[p1]
-            p1+=1; index+=1
-        while p2 < r:
-            tmp_arr[index] = arr[p2]
-            p2+=1; index+=1
-        # copy tmp_arr to arr
-        arr[l:r] = tmp_arr
-    sort(nums, 0, len(nums))
     return nums
+
 # 6. Quick Sort
 def qucik_sort(nums):
     def q_sort(arr, low, high):
