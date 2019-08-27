@@ -46,15 +46,18 @@ def shell_sort(nums):
             nums[insert_index + gap] = value
         gap = gap // 2
     return  nums
-# 5. Merge Sort
-def merge_sort(nums):
-    def sort(arr, l, r):
-        if r-l<=1:
-            return
-        mid = (l+r)//2
-        sort(arr, l, mid)
-        sort(arr, mid, r)
-        merge(arr, l, mid, r)
+# 5. Merge Sort 
+def merge_sort(nums, l, r):  # 初始的 l=0; r= len(arr)-1
+    def merge(arr, l, mid, r):
+        pass
+
+    if l >= r:
+        return
+    mid = (l+r)//2
+    merge_sort(nums, l, mid)
+    merge_sort(nums, mid+1, r)
+    merge(nums, l, mid, r)
+    
     def merge(arr, l, mid, r):
         tmp_arr = [0]*(r-l)
         p1, p2 = l, mid
