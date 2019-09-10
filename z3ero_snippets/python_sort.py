@@ -76,12 +76,7 @@ def merge_sort(nums, l, r):  # 初始的 l=0; r= len(arr)-1
     return nums
 
 # 6. Quick Sort
-def qucik_sort(nums):
-    def q_sort(arr, low, high):
-        if low < high:
-            pos = partition(arr, low, high)
-            q_sort(arr, low, pos-1)
-            q_sort(arr, pos+1, high)
+def qucik_sort(nums, low, high):  # 这里起始 low=0, high=len(nums)-1
     def partition(arr, low, high):
         key = arr[low]
         while low < high:
@@ -93,38 +88,43 @@ def qucik_sort(nums):
             arr[high] = arr[low]
         arr[low] = key
         return low
-    q_sort(nums, 0, len(nums)-1)
+
+    if low<high:
+        pos = partition(arr, low, high)
+        qucik_sort(arr, low, pos-1)
+        qucik_sort(arr, pos+1, high)
     return nums
 
 # 7. Heap Sort： 以小顶堆为例
-def heap_sort(arr):   # 注意：堆排序的数组下标是以 1 开头的
-    def adjust_heap(arr, i, length): # 对某一个节点，调整以它为顶点的树
-        key = arr[i]
-        # 从该节点开始 沿着 关键字 较小的孩子方向向下进行
-        while i*2 <= length:
-            child_index = i*2
-            if child_index < length and arr[child_index] > arr[child_index+1]:  # 如果有两个孩子，且右孩子较小, 和右孩子比较即可
+def heap_sort(arr):
+    length = len(arr)   
+    arr.insert(0, 0)  # 在头插一个元素，保证下标从1开始
+    def adjust_heap(arr, start, length):  # 从索引start开始，调整以它为顶点的堆
+        key = arr[start]
+        while start <= length:
+            child_index = 2*start
+            # 如果有两个孩子，找到比较下的一个
+            if child_index < length and arr[child_index]>arr[child_index+1]:
                 child_index += 1
-            if key > arr[child_index]  # 根节点比孩子大，要把孩子调整上去
-                arr[i] = arr[child_index]
-                i = child_index    # 下一步比较 key 和 （child_index 的孩子节点）
-            else:   # 根节点符合小顶条件，子节点本就符合小顶条件，不用调整了
+            if key > arr[child_index]: # 将较小的节点调整上去
+                arr[start]=arr[child_index]
+                start = child_index
+            else: # start节点就是最小节点
                 break
-        arr[i] = key   # 将 key 放在最后调整出来的位置
-
-    length = len(arr)
+        arr[start] = key
+    
     # 构建最小堆
-    for i in range(length//2, -1, 1):  # 从后往前 对每个元素 自顶向下的 调整堆
+    for i in range(length//2, 0, -1):  # 从后往前 对每个元素 自顶向下的 调整堆
         adjust_heap(arr, i, length)
 
     # 输出最小堆的排序序列
-    for i in range(length, -1, 1):
+    for i in range(length, 1, -1):
         # 堆顶记录和最后一个元素互换
         arr[1], arr[i] = arr[i], arr[1]
         # 重新调整 1 ~ i-1 为小顶堆
         adjust_heap(arr, 1, i-1)
 
-    # 最终数组按照从后往前的顺序，为从小到大的顺序
+    # 最终数组按照从后往前的顺序 为升序， 翻转成正常的升序序列
     return arr.reverse()
 
 # 8. Count Sort
@@ -135,12 +135,12 @@ def count_sort(nums):
     # 第一次遍历，填充数组
     for each in nums:
         count_arr[each-min_value]+=1
-    # 频率数组—>元素开始的索引, 保持稳定排序
+    # 频率数组, 保持稳定排序
     for i in range(0, len(count_arr)-1):
         count_arr[i+1] += count_arr[i]
-    # 从后向前遍历，保持稳定排序
+    # 从后向前遍历，保持稳定排序 ,
     new_nums = [None]*len(nums)
-    for each in nums:
+    for each in nums[::-1]:
         new_nums[count_arr[each-min_value]-1] = each
         count_arr[each-min_value] -= 1
     return new_nums
@@ -150,7 +150,7 @@ def bucket_sort(nums):
     max_value, min_value = max(nums), min(nums)
     # 设置桶的数量，以及桶的跨度
     bucket_num = 10
-    span = (max_value - min_value)//10 + 1
+    span = (max_value - min_value)//bucket_num + 1
     bucket_list = [[] for i in range(10)]
     # 遍历数组，将数据放入桶中
     for each in nums:
