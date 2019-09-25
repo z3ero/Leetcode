@@ -14,7 +14,9 @@ class Solution:
         que = deque([])
         # 先将前 k 的数据入队, 并保持最大元素位于队头
         for i in range(k):
-            while len(que) > 0 and nums[i] >= nums[que[-1]]: # 从后向前比我小的元素全部去掉
+            # 后面进来的数字比前面的数大，那前面不可能是最大值，pop
+            # 从后向前比我小的元素全部去掉
+            while len(que) > 0 and nums[i] >= nums[que[-1]]: 
                 que.pop()
             que.append(i)  # 下标入队
         # 滑动窗口，每次将最大的值输出
